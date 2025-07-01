@@ -4,7 +4,7 @@ import { useWallet } from "@/context/WalletContext";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Zap } from "lucide-react";
 
 export default function Home() {
   const { wallet, connect, disconnect } = useWallet();
@@ -23,45 +23,64 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-black px-4">
+    <main className="min-h-screen flex items-center justify-center bg-black px-4 relative overflow-hidden">
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md"
+        className="w-full max-w-md z-10"
       >
-        <Card className="p-6 shadow-xl border border-muted">
-          <CardContent className="space-y-6">
-            <h1 className="text-2xl font-bold text-center">Solana Wallet</h1>
+        <Card className="p-6 bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl">
 
+          <CardContent className="space-y-6">
+            {/* Icon */}
+            <Zap className="w-8 h-8 text-purple-500 mx-auto" />
+
+            {/* Heading */}
+            <h1 className="text-2xl font-bold text-center text-white">Solana Wallet</h1>
+
+            {/* Not Connected */}
             {!wallet && (
-              <Button onClick={handleConnect} className="w-full">
+              <button
+                onClick={handleConnect}
+                className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white rounded-md shadow-lg transition-all cursor-pointer"
+              >
                 Connect Wallet
-              </Button>
+              </button>
             )}
 
+            {/* Connected View */}
             {wallet && (
               <div className="space-y-4">
-                <div className="text-xs text-muted-foreground">
-                  <h2 className="mb-1 font-bold text-black">Public Key:</h2>
-                  <p className="font-mono break-words">{wallet.publicKey()}</p>
+                {/* Public Key */}
+                <div className="text-xs text-white">
+                  <h2 className="mb-1 font-bold">Public Key:</h2>
+                  <p className="font-mono break-words text-purple-300">
+                    {wallet.publicKey()}
+                  </p>
                 </div>
 
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                {/* Airdrop Button */}
+                <button
+                  onClick={handleAirdrop}
+                  className="w-full py-2 px-4 bg-green-600 hover:bg-green-500 text-white rounded-md shadow-md transition-all cursor-pointer"
+                >
                   Airdrop 1 SOL
-                </Button>
+                </button>
 
-                <Button
+                {/* Disconnect Button */}
+                <button
                   onClick={disconnect}
-                  className="w-full"
-                  variant="destructive"
+                  className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white rounded-md shadow-md transition-all cursor-pointer"
                 >
                   Disconnect
-                </Button>
+                </button>
 
+                {/* Status */}
                 {status && (
                   <motion.p
-                    className="text-sm text-center text-muted-foreground"
+                    className="text-sm text-center text-white/70"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
