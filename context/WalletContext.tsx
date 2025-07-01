@@ -13,8 +13,12 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
     setWallet(w);
   };
 
+  const disconnect = () => {
+   setWallet(null); // disconnect houn jail
+  }
+
   return (
-    <WalletContext.Provider value={{ wallet, connect }}>
+    <WalletContext.Provider value={{ wallet, connect, disconnect }}>
       {children}
     </WalletContext.Provider>
   );

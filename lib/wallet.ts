@@ -1,11 +1,18 @@
-import { Keypair, Connection, Transaction, SystemProgram } from "@solana/web3.js";
+import {
+  Connection,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  clusterApiUrl,
+  ConfirmOptions,
+  sendAndConfirmTransaction,
+} from "@solana/web3.js";
 
 export class CustomWallet {
   keypair: Keypair;
   connection: Connection;
 
   constructor() {
-    this.keypair = Keypair.generate(); // Random wallet banata hai
+    this.keypair = Keypair.generate(); // Random wallet banavte
     this.connection = new Connection("https://api.devnet.solana.com", "confirmed");
   }
 
@@ -19,8 +26,22 @@ export class CustomWallet {
   }
 
   async airdrop() {
-    const sig = await this.connection.requestAirdrop(this.keypair.publicKey, 1e9);
-    await this.connection.confirmTransaction(sig);
-    return sig;
-  }
+  const { blockhash, lastValidBlockHeight } = await this.connection.getLatestBlockhash("finalized");
+
+  const sig = await this.connection.requestAirdrop(
+    this.keypair.publicKey,
+    LAMPORTS_PER_SOL
+  );
+
+  await this.connection.confirmTransaction({
+    signature: sig,
+    blockhash,
+    lastValidBlockHeight,
+  });
+
+  return sig;
+}
+
+
+
 }
