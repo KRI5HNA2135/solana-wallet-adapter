@@ -1,7 +1,10 @@
 "use client";
 
-import { useWallet } from "../context/WalletContext";
+import { useWallet } from "@/context/WalletContext";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { wallet, connect, disconnect } = useWallet();
@@ -16,48 +19,60 @@ export default function Home() {
     if (!wallet) return;
     setStatus("Requesting airdrop...");
     const sig = await wallet.airdrop();
-    setStatus(`✅ Airdrop successful! Sig: ${sig.slice(0, 8)}...`);
+    setStatus(`✅ Airdrop success! Sig: ${sig.slice(0, 6)}...`);
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-400 to-purple-900 text-white px-4">
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl space-y-6 border border-white/20">
-        <h1 className="text-2xl font-bold text-center text-white">⚡ Solana Dev Wallet</h1>
+    <main className="min-h-screen flex items-center justify-center bg-black px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="w-full max-w-md"
+      >
+        <Card className="p-6 shadow-xl border border-muted">
+          <CardContent className="space-y-6">
+            <h1 className="text-2xl font-bold text-center">Solana Wallet</h1>
 
-        {!wallet && (
-          <button
-            onClick={handleConnect}
-            className="w-full py-2 px-4 bg-gray-900 hover:bg-purple-700 rounded-lg transition-all text-white font-semibold"
-          >
-            Connect Wallet
-          </button>
-        )}
+            {!wallet && (
+              <Button onClick={handleConnect} className="w-full">
+                Connect Wallet
+              </Button>
+            )}
 
-        {wallet && (
-          <div className="space-y-4">
-            <div className="bg-white/10 p-4 rounded-lg break-words text-sm border border-white/20">
-              <p className="text-xs text-gray-200 mb-1">Public Key:</p>
-              <p className="font-mono">{wallet.publicKey()}</p>
-            </div>
+            {wallet && (
+              <div className="space-y-4">
+                <div className="text-xs text-muted-foreground">
+                  <h2 className="mb-1 font-bold text-black">Public Key:</h2>
+                  <p className="font-mono break-words">{wallet.publicKey()}</p>
+                </div>
 
-            <button
-              onClick={handleAirdrop}
-              className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 rounded-lg transition-all text-white font-semibold"
-            >
-              Airdrop 1 SOL
-            </button>
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                  Airdrop 1 SOL
+                </Button>
 
-            <button
-              onClick={disconnect}
-              className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg transition-all text-white font-semibold"
-            >
-              Disconnect
-            </button>
+                <Button
+                  onClick={disconnect}
+                  className="w-full"
+                  variant="destructive"
+                >
+                  Disconnect
+                </Button>
 
-            <p className="text-sm text-gray-200 text-center">{status}</p>
-          </div>
-        )}
-      </div>
+                {status && (
+                  <motion.p
+                    className="text-sm text-center text-muted-foreground"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    {status}
+                  </motion.p>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
     </main>
   );
 }
